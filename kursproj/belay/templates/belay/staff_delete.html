@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}Увольнение{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <h1>Подтверждение</h1>
+    <form method="post">
+        {% csrf_token %}
+        <button class="w-25 btn btn-danger" type="submit">Уволить</button>
+    </form>
+</div>
+
+{% endblock %}

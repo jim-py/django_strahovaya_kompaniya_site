@@ -1,0 +1,12 @@
+{% extends 'staffs_template.html' %}
+
+{% block title %}Архив сотрудников{% endblock %}
+
+{% block archive %}
+<a class="w-25 btn btn-lg btn-outline-primary button_adds" href="{% url 'staff_archive' %}">В архив</a>
+{% endblock %}
+{% block search %}
+<form class="search_form" method="GET" action="{% url 'get_branch_search' branch_id %}">
+    <input type="search" class="form-control" name="search" placeholder="Поиск по фамилии...">
+</form>
+{% endblock %}

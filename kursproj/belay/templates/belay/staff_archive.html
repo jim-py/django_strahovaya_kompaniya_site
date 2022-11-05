@@ -1,0 +1,19 @@
+{% extends 'staffs_template.html' %}
+
+{% block title %}Архив сотрудников{% endblock %}
+
+{% block archive %}
+<a class="w-25 btn btn-lg btn-outline-primary button_adds" href="{% url 'staff' %}">Выйти из архива</a>
+{% endblock %}
+{% block search %}
+<form class="search_form" method="GET" action="{% url 'search_staff_archive' %}">
+    <input type="search" class="form-control" name="search" placeholder="Поиск по фамилии...">
+</form>
+{% endblock %}
+
+{% block card_buttons %}
+<a class="btn btn-outline-primary staff_bottom_buttons fw-bold"
+   href="{% url 'staff_return' item.pk %}">Вернуть из архива</a>
+<a class="btn btn-outline-danger staff_bottom_buttons fw-bold"
+   href="{% url 'staff-delete' item.pk %}">Уволить</a>
+{% endblock %}

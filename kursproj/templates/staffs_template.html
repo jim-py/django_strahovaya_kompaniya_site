@@ -1,0 +1,179 @@
+{% extends 'base.html' %}
+{% load branch_tags %}
+
+{% block content %}
+
+{% block container_adding_searching %}
+<div class="container main-container-staffs">
+    <div class="container">
+        <div class="d-flex align-items-center">
+            {% if request.user.is_staff %}
+            <a class="w-25 btn btn-lg btn-primary button_add" href="{% url 'add_staff' %}">Добавить сотрудника</a>
+            {% endif %}
+            {% block archive %}{% endblock %}
+            {% block search %}
+            <form class="search_form" method="GET" action="{% url 'search_staff' %}">
+                <input type="search" class="form-control" name="search" placeholder="Поиск по фамилии...">
+            </form>
+            {% endblock %}
+        </div>
+
+        <div class="d-flex align-items-center">
+            <ul class="pagination pagination-lg">
+            {% if page_data.has_previous %}
+            <li class="page-item"><a class="page-link" href="?{% if request.GET.search %}search={{ request.GET.search }}{% endif %}&page={{ page_data.previous_page_number }}" tabindex="-1">&laquo;</a>
+            </li>
+            {% else %}
+            <li class="page-item"><a class="page-link" href="">&laquo;</a></li>
+            {% endif %}
+
+            {% for page in page_data.paginator.page_range %}
+
+            {% if page_data.number == page %}
+            <li class="page-item active"><a class="page-link" href="?{% if request.GET.search %}search={{ request.GET.search }}{% endif %}&page={{ page }}">{{ page }}</a></li>
+
+            {% elif page == 4 and page_data.number < page %}
+            <li class="page-item"><a class="page-link" href="?{% if request.GET.search %}search={{ request.GET.search }}{% endif %}&page={{ page }}">{{ page }}</a></li>
+            {% elif page == 5 and page_data.number < page %}
+            <li class="page-item"><a class="page-link" href="?{% if request.GET.search %}search={{ request.GET.search }}{% endif %}&page={{ page }}">{{ page }}</a></li>
+
+            {% elif page == page_data.paginator.num_pages|add:-3 and page_data.number > page %}
+            <li class="page-item"><a class="page-link" href="?{% if request.GET.search %}search={{ request.GET.search }}{% endif %}&page={{ page }}">{{ page }}</a></li>
+            {% elif page == page_data.paginator.num_pages|add:-4 and page_data.number > page %}
+            <li class="page-item"><a class="page-link" href="?{% if request.GET.search %}search={{ request.GET.search }}{% endif %}&page={{ page }}">{{ page }}</a></li>
+
+            {% elif page > page_data.number|add:-3 and page < page_data.number|add:3 %}
+            <li class="page-item"><a class="page-link" href="?{% if request.GET.search %}search={{ request.GET.search }}{% endif %}&page={{ page }}">{{ page }}</a></li>
+            {% endif %}
+
+            {% endfor %}
+
+            {% if page_data.has_next %}
+            <li class="page-item last-page-item"><a class="page-link" href="?{% if request.GET.search %}search={{ request.GET.search }}{% endif %}&page={{ page_data.next_page_number }}" tabindex="-1">&raquo;</a></li>
+            {% else %}
+            <li class="page-item"><a class="page-link" href="">&raquo;</a></li>
+            {% endif %}
+        </ul>
+        </div>
+
+    </div>
+    {% block paginator %}
+
+    {% endblock %}
+    <div class="album">
+    <div class="container">
+        <div class="row row-cols-md-4 g-5">
+            {% for item in page_data %}
+            <div class="col">
+                <div class="card staff_card">
+
+                    {% if item.photo %}
+                    <img class="rounded-circle staff_photo" src="{{ item.photo }}">
+                    {% else %}
+                    <img class="rounded-circle staff_photo" src="https://мирпарт.рф/local/templates/chp/files/reviews/user.png">
+                    {% endif %}
+                    <div class="card-body">
+                        <a class="btn btn-light btn-lg staff_top_button fw-bold"
+                           data-bs-target="#detailed"
+                           data-bs-toggle="modal"
+                           data-modal="staff"
+                           data-role="{{ item.role }}"
+                           data-birthday="{{ item.birthday }}"
+                           data-branch="{{ item.branch }}"
+                           data-post="{{ item.post }}"
+                           data-fio="{{item.last_name}} {{item.first_name}} {{item.otchestvo}}"
+                           data-address="г. {{ item.city }}, {{ item.road }}, дом {{ item.house }}, квартира {{ item.flat }}"
+                           data-logpass="{{ item.username }}"
+                           data-email="{{ item.email }}"
+                           data-telephone="{{ item.telephone }}"
+                           data-date="{{ item.date_joined }}">{{item.last_name}} {{item.first_name}}</a>
+                        <div class="container">
+                            <p class="d-flex fs-5"><img class="staff_icons" src="/media/post.png">{{ item.post }}</p>
+                            <p class="d-flex fs-5"><img class="staff_icons" src="/media/telephone.png">{{ item.telephone }}</p>
+                            <p class="d-flex fs-5"><img class="staff_icons" src="/media/branch.png">{{ item.branch }}</p>
+                            <p class="d-flex fs-5"><img class="staff_icons" src="/media/money.png">{% staff_salary item.pk %}</p>
+                        </div>
+                        {% if request.user.is_staff %}
+                        <a class="btn btn-outline-primary staff_bottom_buttons fw-bold"
+                           href="{% url 'staff_pacts' item.pk %}">Посмотреть договоры</a>
+                        <a class="btn btn-outline-primary staff_bottom_buttons fw-bold"
+                           href="{% url 'calendar_staff_pacts' item.pk 2022 10 %}">График зарплат</a>
+                        {% block card_buttons %}
+                        <a class="btn btn-outline-danger staff_bottom_buttons fw-bold"
+                           href="{% url 'hold_staff' item.pk %}">Убрать в архив</a>
+                        {% endblock %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}
+
+{% block modal %}
+<div class="modal fade" id="detailed" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content staff_modal">
+            <div class="modal-header">
+                <h4 class="modal-fio" id="fio"></h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="container d-flex">
+                    <img class="staff_icons" src="/media/role.png">
+                    <p class="modal-role fs-5 ps-1" id="role"></p>
+                </div>
+                <div class="container d-flex">
+                    <img class="staff_icons" src="/media/branch.png">
+                    <p class="modal-branch fs-5 ps-1" id="branch"></p>
+                </div>
+                <div class="container d-flex">
+                    <img class="staff_icons" src="/media/post.png">
+                    <p class="modal-post fs-5 ps-1" id="post"></p>
+                </div>
+
+                <p class="paragraph_modal_staff"></p>
+
+                <div class="container d-flex">
+                    <img class="staff_icons" src="/media/address.png">
+                    <p class="modal-address fs-5 ps-1" id="address"></p>
+                </div>
+                <div class="container d-flex">
+                    <img class="staff_icons" src="/media/logpass.png">
+                    <p class="modal-logpass fs-5 ps-1" id="logpass"></p>
+                </div>
+
+                <p class="paragraph_modal_staff"></p>
+
+                <div class="container d-flex">
+                    <img class="staff_icons" src="/media/email.png">
+                    <p class="modal-email fs-5 ps-1" id="email"></p>
+                </div>
+                <div class="container d-flex">
+                    <img class="staff_icons" src="/media/telephone.png">
+                    <p class="modal-telephone fs-5 ps-1" id="telephone"></p>
+                </div>
+
+                <p class="paragraph_modal_staff"></p>
+
+                <div class="container d-flex">
+                    <img class="staff_icons" src="/media/birthday.png">
+                    <p class="modal-birthday fs-5 ps-1" id="birthday"></p>
+                </div>
+                <div class="container d-flex">
+                    <img class="staff_icons" src="/media/calendar.png">
+                    <p class="modal-date fs-5 ps-1" id="date"></p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% endblock %}

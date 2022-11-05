@@ -1,0 +1,15 @@
+.nav-bar {
+    background-color: white;
+    border-radius: 0 0 15px 15px;
+    width: 1000px;
+    box-shadow: 0 0 5px -1px #888;
+}
+
+li a:hover:not(.active) {
+    background-color: #0d6efd;
+    color: white;
+}
+
+li a {
+    margin-right: 10px;
+}

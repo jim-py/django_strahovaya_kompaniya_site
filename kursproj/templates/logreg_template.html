@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block stat %} <link href="{% static 'css/sign.css' %}" rel="stylesheet"> {% endblock %}
+
+{% block title %}Вход{% endblock %}
+
+{% block navbar %}{% endblock %}
+
+{% block paragraph %}{% endblock %}
+
+{% block content %}
+
+{% if request.user.is_authenticated %}
+<meta http-equiv="refresh" content="0; {% url 'news' %}"/>
+{% endif %}
+<body class="text-center">
+<main class="form-signin w-100 m-auto logreg">
+    <img class="mb-4" src="https://lh3.googleusercontent.com/5Ocdv2NNiJ3MqYbq55-uBderLLdwj8iFmNztcZvNGF78Zt7RwMEezTYlwmzq6knjvHA=w300" width="100" height="100">
+    {% block h1 %}<h1 class="h3 mb-3 fw-normal">Авторизация</h1>{% endblock %}
+    {% if messages %}
+    {% for message in messages %}
+    {% if message.tags == 'error' %}
+    <div class="alert alert-danger" role="alert">{{ message }}</div>
+    {% else %}
+    <div class="alert alert-{{ message.tags }}" role="alert">{{ message }}</div>
+    {% endif %}
+    {% endfor %}
+    {% endif %}
+    <form method="post">
+        {% csrf_token %}
+
+        {{ form.non_field.errors }}
+
+        {% block form %}
+        <div class="form-floating">
+            {{ form.username }}
+            <label for="{{ form.username.id_for_label }}">Логин</label>
+            <div class="text-danger">
+                {{ form.username.errors }}
+            </div>
+        </div>
+
+        <div class="form-floating">
+            {{ form.password }}
+            <label for="{{ form.password.id_for_label }}">Пароль</label>
+            <div class="text-danger">
+                {{ form.password.errors }}
+            </div>
+        </div>
+        {% endblock %}
+
+      <div class="mb-4"></div>
+        {% block button_reg %}<button class="w-100 btn btn-lg btn-primary" type="submit">Войти</button>{% endblock %}
+    </form>
+    <p></p>
+    {% block button %}<a type="button" class="btn btn-link" href="{% url 'registration' %}">Создать аккаунт</a>{% endblock %}
+    <p class="mt-4 mb-3 text-muted">© Джимми</p>
+</main>
+</body>
+
+{% endblock %}

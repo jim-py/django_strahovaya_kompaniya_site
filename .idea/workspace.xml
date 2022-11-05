@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="e5705f7d-e51b-48f0-91d0-94a80fbda634" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/venv/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/venv/pyvenv.cfg" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ChangesViewManager" show_ignored="true" />
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+        <option value="JavaScript File" />
+        <option value="CSS File" />
+        <option value="HTML File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="2FYpRtSKmM1YhGim6KWQpqdyzXa" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/djst/kpsite&quot;,
+    &quot;list.type.of.created.stylesheet&quot;: &quot;CSS&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PythonContentEntriesConfigurable&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\djst\kpsite\kursproj\static" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\djst\kpsite\kursproj\kursproj\static\css\logined_style" />
+      <recent name="C:\djst\kpsite\kursproj\templates\js" />
+      <recent name="C:\djst\kpsite" />
+      <recent name="C:\djst\kpsite\kursproj\kursproj\static" />
+      <recent name="C:\djst\kpsite\kursproj\media" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="main" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+      <module name="kpsite" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="e5705f7d-e51b-48f0-91d0-94a80fbda634" name="Changes" comment="" />
+      <created>1664678866821</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1664678866821</updated>
+      <workItem from="1664678867957" duration="2833000" />
+      <workItem from="1664712277746" duration="5909000" />
+      <workItem from="1664764394503" duration="11182000" />
+      <workItem from="1664793823655" duration="4346000" />
+      <workItem from="1664801746921" duration="87000" />
+      <workItem from="1664850789902" duration="3446000" />
+      <workItem from="1664872013144" duration="832000" />
+      <workItem from="1664937402187" duration="2822000" />
+      <workItem from="1664986903918" duration="3866000" />
+      <workItem from="1665023799261" duration="3495000" />
+      <workItem from="1665057603758" duration="3826000" />
+      <workItem from="1665070974647" duration="1951000" />
+      <workItem from="1665111300888" duration="1158000" />
+      <workItem from="1665112706542" duration="1461000" />
+      <workItem from="1665118373788" duration="1230000" />
+      <workItem from="1665136786719" duration="1236000" />
+      <workItem from="1665139804592" duration="13000" />
+      <workItem from="1665152825053" duration="9082000" />
+      <workItem from="1665196311695" duration="3305000" />
+      <workItem from="1665216331243" duration="17121000" />
+      <workItem from="1665284522141" duration="2364000" />
+      <workItem from="1665327619375" duration="198000" />
+      <workItem from="1665370507203" duration="2185000" />
+      <workItem from="1665456807417" duration="4570000" />
+      <workItem from="1665489467808" duration="9825000" />
+      <workItem from="1665652383474" duration="3582000" />
+      <workItem from="1665731634399" duration="38113000" />
+      <workItem from="1665803590333" duration="18011000" />
+      <workItem from="1665823124465" duration="521000" />
+      <workItem from="1665832053068" duration="1284000" />
+      <workItem from="1665850108570" duration="1035000" />
+      <workItem from="1665852393420" duration="852000" />
+      <workItem from="1665903240905" duration="13778000" />
+      <workItem from="1666060444539" duration="3422000" />
+      <workItem from="1666088569500" duration="1147000" />
+      <workItem from="1666107242550" duration="12961000" />
+      <workItem from="1666146388812" duration="54219000" />
+      <workItem from="1666282623459" duration="7690000" />
+      <workItem from="1666318707676" duration="12189000" />
+      <workItem from="1666541403061" duration="117000" />
+      <workItem from="1666541527503" duration="3000" />
+      <workItem from="1666541967056" duration="48000" />
+      <workItem from="1666542599274" duration="596000" />
+      <workItem from="1666579662760" duration="602000" />
+      <workItem from="1666635234085" duration="23000" />
+      <workItem from="1666635278509" duration="22000" />
+      <workItem from="1666635508549" duration="64000" />
+      <workItem from="1666635580568" duration="11000" />
+      <workItem from="1666694811927" duration="247000" />
+      <workItem from="1666711806700" duration="15642000" />
+      <workItem from="1666749802456" duration="24881000" />
+      <workItem from="1666782220789" duration="34000" />
+      <workItem from="1666875038910" duration="94000" />
+      <workItem from="1666949544371" duration="114000" />
+      <workItem from="1667020819728" duration="5090000" />
+      <workItem from="1667232982466" duration="144000" />
+      <workItem from="1667289185422" duration="455000" />
+      <workItem from="1667292306697" duration="4149000" />
+      <workItem from="1667371961759" duration="41000" />
+      <workItem from="1667373690669" duration="2542000" />
+      <workItem from="1667377181365" duration="1005000" />
+      <workItem from="1667395078337" duration="3782000" />
+      <workItem from="1667458380557" duration="4897000" />
+      <workItem from="1667466089066" duration="157000" />
+      <workItem from="1667466254575" duration="237000" />
+      <workItem from="1667466523198" duration="52000" />
+      <workItem from="1667466583545" duration="49000" />
+      <workItem from="1667466658308" duration="452000" />
+      <workItem from="1667467124759" duration="1116000" />
+      <workItem from="1667468290417" duration="6480000" />
+      <workItem from="1667486831504" duration="14000" />
+      <workItem from="1667558321538" duration="2103000" />
+      <workItem from="1667576357572" duration="11000" />
+      <workItem from="1667576732786" duration="1285000" />
+      <workItem from="1667625273802" duration="448000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/kpsite$main.coverage" NAME="main Coverage Results" MODIFIED="1667559374664" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+  </component>
+</project>

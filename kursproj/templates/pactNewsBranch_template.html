@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% block container_adding_searching %}
+<div class="container main-container">
+    <div class="container">
+        <div class="d-flex align-items-center">
+            {% block top_adding_searching %}{% endblock %}
+        </div>
+    </div>
+    {% block paginator %}
+    <nav>
+        <div class="d-flex align-items-center">
+            <ul class="pagination pagination-lg">
+            {% if page_data.has_previous %}
+            <li class="page-item"><a class="page-link" href="?{% if request.GET.search %}search={{ request.GET.search }}{% endif %}&page={{ page_data.previous_page_number }}" tabindex="-1">&laquo;</a>
+            </li>
+            {% else %}
+            <li class="page-item"><a class="page-link" href="">&laquo;</a></li>
+            {% endif %}
+
+            {% for page in page_data.paginator.page_range %}
+
+            {% if page_data.number == page %}
+            <li class="page-item active"><a class="page-link" href="?{% if request.GET.search %}search={{ request.GET.search }}{% endif %}&page={{ page }}">{{ page }}</a></li>
+
+            {% elif page == 4 and page_data.number < page %}
+            <li class="page-item"><a class="page-link" href="?{% if request.GET.search %}search={{ request.GET.search }}{% endif %}&page={{ page }}">{{ page }}</a></li>
+            {% elif page == 5 and page_data.number < page %}
+            <li class="page-item"><a class="page-link" href="?{% if request.GET.search %}search={{ request.GET.search }}{% endif %}&page={{ page }}">{{ page }}</a></li>
+
+            {% elif page == page_data.paginator.num_pages|add:-3 and page_data.number > page %}
+            <li class="page-item"><a class="page-link" href="?{% if request.GET.search %}search={{ request.GET.search }}{% endif %}&page={{ page }}">{{ page }}</a></li>
+            {% elif page == page_data.paginator.num_pages|add:-4 and page_data.number > page %}
+            <li class="page-item"><a class="page-link" href="?{% if request.GET.search %}search={{ request.GET.search }}{% endif %}&page={{ page }}">{{ page }}</a></li>
+
+            {% elif page > page_data.number|add:-3 and page < page_data.number|add:3 %}
+            <li class="page-item"><a class="page-link" href="?{% if request.GET.search %}search={{ request.GET.search }}{% endif %}&page={{ page }}">{{ page }}</a></li>
+            {% endif %}
+
+            {% endfor %}
+
+            {% if page_data.has_next %}
+            <li class="page-item last-page-item"><a class="page-link" href="?{% if request.GET.search %}search={{ request.GET.search }}{% endif %}&page={{ page_data.next_page_number }}" tabindex="-1">&raquo;</a></li>
+            {% else %}
+            <li class="page-item"><a class="page-link" href="">&raquo;</a></li>
+            {% endif %}
+        </ul>
+        </div>
+    </nav>
+    {% endblock %}
+    <div class="list-group">
+        {% block staff_fio %}{% endblock %}
+        {% for item in page_data %}
+        {% block out_data_list %}{% endblock %}
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
+{% block modal %}
+<div class="modal fade" id="detailed" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content staff_modal">
+            <div class="modal-header">
+                {% block modal-header %}{% endblock %}
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                {% block modal-body %}{% endblock %}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% endblock %}

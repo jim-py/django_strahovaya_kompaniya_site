@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load branch_tags %}
+
+{% block title %}Профиль{% endblock %}
+
+{% block content %}
+
+<div style="background-color: white; width: 1000px; padding: 16px; margin: 15px auto; border-radius: 15px" class="container main-container">
+    <h1>Изменить</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button class="w-25 btn btn-primary" type="submit">Добавить</button>
+    </form>
+</div>
+
+{% endblock %}

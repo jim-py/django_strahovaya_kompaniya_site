@@ -1,0 +1,30 @@
+body {
+    background-color: #f3f3f3;
+}
+
+.main-container {
+    background-color: white;
+    border-radius: 15px;
+    padding: 35px 30px 15px 30px;
+    width: 1000px;
+    margin: 15px auto;
+    box-shadow: 0 0 5px -1px #888;
+}
+
+.main-container-staffs {
+    background-color: white;
+    border-radius: 15px;
+    padding: 40px 30px 30px 30px;
+    width: 1320px;
+    margin: 15px auto;
+    box-shadow: 0 0 5px -1px #888;
+}
+
+.main-container-adding {
+    background-color: white;
+    border-radius: 15px;
+    padding: 20px 30px 30px 30px;
+    width: 1000px;
+    margin: 15px auto;
+    box-shadow: 0 0 5px -1px #888;
+}

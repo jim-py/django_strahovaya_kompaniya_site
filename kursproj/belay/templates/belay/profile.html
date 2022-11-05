@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load branch_tags %}
+
+{% block title %}Профиль{% endblock %}
+
+{% block content %}
+
+<div style="background-color: white; width: 1000px; padding: 16px; margin: 15px auto; border-radius: 15px" class="container main-container">
+    <a class="btn btn-primary bln-lg w-25" href="{% url 'edit_profile' username pk %}">Изменить</a>
+    {% for item in profile %}
+    <div class="fs-3">{{item}}</div>
+    {% endfor %}
+</div>
+
+{% endblock %}

@@ -1,0 +1,19 @@
+.page-item {
+    width: 70px;
+    height: 56px;
+    margin: 0 10px 0 0;
+}
+
+.page-link {
+    text-align: center;
+    margin: 0;
+    box-shadow: 0 0 6px -3px #888;
+}
+
+.last-page-item {
+    margin: 0;
+}
+
+.pagination-lg {
+    margin: 16px auto;
+}

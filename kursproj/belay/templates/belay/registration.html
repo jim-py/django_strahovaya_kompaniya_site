@@ -1,0 +1,45 @@
+{% extends 'logreg_template.html' %}
+
+{% block title %}Регистрация{% endblock %}
+
+{% block h1 %}<h1 class="h3 mb-3 fw-normal">Регистрация</h1>{% endblock %}
+
+{% block form %}
+
+<div class="form-floating">
+    {{ form.username }}
+    <label for="{{ form.username.id_for_label }}">Логин</label>
+    <div class="text-danger">
+        {{ form.username.errors }}
+    </div>
+</div>
+
+<div class="form-floating">
+    {{ form.email }}
+    <label for="{{ form.email.id_for_label }}">Почта</label>
+    <div class="text-danger">
+        {{ form.email.errors }}
+    </div>
+</div>
+
+<div class="form-floating">
+    {{ form.password1 }}
+    <label for="{{ form.password1.id_for_label }}">Пароль</label>
+    <div class="text-danger">
+        {{ form.password1.errors }}
+    </div>
+</div>
+
+<div class="form-floating">
+    {{ form.password2 }}
+    <label for="{{ form.password2.id_for_label }}">Повторите пароль</label>
+    <div class="text-danger">
+        {{ form.password2.errors }}
+    </div>
+</div>
+
+{% endblock %}
+
+{% block button_reg %}<button class="w-100 btn btn-lg btn-primary" type="submit">Зарегистрироваться</button>{% endblock %}
+
+{% block button %}<a type="button" class="btn btn-link" href="{% url 'entry' %}">Войти</a>{% endblock %}

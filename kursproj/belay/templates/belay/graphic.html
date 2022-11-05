@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load branch_tags %}
+{% load static %}
+
+{% block title %}График{% endblock %}
+
+{% block content %}
+
+<div class="service-container"
+        data-salary_of_days="{% salary_of_days pact year month %}"
+        data-get_massive_columns="{% get_massive_columns year month %}">
+</div>
+
+
+<div class="container-fluid">
+  <div class="container w-10">
+    <main class="main-container" style="width: 1000px; margin: 15px auto; background-color: white; border-radius: 15px; padding: 10px 30px"><div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
+      <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">График зарплаты</h1>
+        <div class="btn-toolbar">
+          <form>
+            <p>
+              <input id="monthcalen" type="month" name="month" max="2022-10" min="2021-10" value="{{ year }}-{{ month }}">
+              <input class="btn btn-outline-secondary" id="clickMe" type="button" value="Посмотреть отчёт">
+            </p>
+          </form>
+        </div>
+      </div>
+
+      <canvas class="my-4 w-100 chartjs-render-monitor" id="myChart" width="1105" height="466" style="display: block; width: 1105px; height: 466px;"></canvas>
+
+      <h2>Договоры {{ staff_fio }}</h2>
+      <div class="table-responsive">
+        <table class="table table-striped table-sm">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Тип</th>
+              <th scope="col">Срок</th>
+              <th scope="col">Страховая сумма</th>
+              <th scope="col">Дата заключения</th>
+              <th scope="col">Прибыль</th>
+            </tr>
+          </thead>
+
+          <tbody>
+          {% for item in pact %}
+            <tr>
+              <td>{{ item.pk }}</td>
+              <td>{{ item.type }}</td>
+              <td>{{ item.term }} лет</td>
+              <td>{{ item.ssum }} рублей</td>
+              <td>{{ item.conclusionDate }}</td>
+              <td>{% staff_salary_of_pact item.pk year month %} рублей</td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block js %} <script type="text/javascript" src="{% static 'js/dashboard.js' %}"></script> {% endblock %}

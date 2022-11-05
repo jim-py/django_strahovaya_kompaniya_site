@@ -1,0 +1,48 @@
+.staff_photo {
+    height: 150px;
+    width: 150px;
+    object-fit: cover;
+    margin: 15px auto 0 auto;
+    border: 5px solid #f3f3f3;
+    box-shadow: 0 0 10px 0 #888;
+}
+
+.staff_card {
+    border-radius: 15px 15px 15px 15px;
+    margin: 0 0 8px 0;
+    border: 0;
+    box-shadow: 0 0 10px -2px #888;
+}
+
+.staff_top_button {
+    position: relative;
+    left: 50%;
+    transform: translate(-50%, 0);
+    box-shadow: 0 0 10px -1px #888;
+    margin: 0 0 25px 0;
+}
+
+.staff_bottom_buttons {
+    width: 100%;
+    margin: 7px 0 0 0;
+}
+
+
+
+.staff_icons {
+    height: 28px;
+    width: 28px;
+    margin: 0 8px 0 0;
+}
+
+.staff_modal {
+    border-radius: 15px;
+}
+
+.paragraph_modal_staff {
+    margin: 10px 0 26px 0;
+    height: 2px;
+    width: 75%;
+    background-color: #000000;
+    border-radius: 5px;
+}
