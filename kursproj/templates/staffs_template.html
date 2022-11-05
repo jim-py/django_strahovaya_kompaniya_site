@@ -62,6 +62,10 @@
     {% endblock %}
     <div class="album">
     <div class="container">
+        {% if branch_name %}
+        <div class="fs-3 fw-bold">Филиал: {{ branch_name }}</div>
+        {% else %}
+        {% endif %}
         <div class="row row-cols-md-4 g-5">
             {% for item in page_data %}
             <div class="col">

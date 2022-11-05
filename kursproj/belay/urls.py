@@ -20,6 +20,7 @@ urlpatterns = [
     path('branch/add', add_branch, name='add_branch'),
     path('branch/search', search_branch, name='search_branch'),
     path('branch/<int:branch_id>/', get_branch, name='branch'),
+    path('branch/<int:branch_id>/archive', staff_branch_archive, name='staff_branch_archive'),
     path('branch/<int:branch_id>/search', get_branch_search, name='get_branch_search'),
 
     path('staff/', staff, name='staff'),

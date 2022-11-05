@@ -54,7 +54,12 @@ def salary_of_days(pacts, year, month):
 
 @register.simple_tag()
 def get_staff_count(branch_pk):
-    return Branch.objects.get(pk=branch_pk).staff_set.all().count()
+    return Branch.objects.get(pk=branch_pk).staff_set.filter(is_active=True).count()
+
+
+@register.simple_tag()
+def get_staff_count_archive(branch_pk):
+    return Branch.objects.get(pk=branch_pk).staff_set.filter(is_active=False).count()
 
 
 def staff_salary_graphic(salary, pact, year, month):

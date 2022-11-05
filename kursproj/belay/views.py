@@ -141,8 +141,20 @@ def pact(request):
 
 @login_required(login_url='entry')
 def get_branch(request, branch_id):
+    archive = 0
+    branch_name = Branch.objects.get(pk=branch_id).name
     return render(request, 'belay/staff_branch.html',
-                  {'page_data': page_maker(request, Staff.objects.filter(branch_id=branch_id).order_by('last_name')), 'branch_id': branch_id})
+                  {'page_data': page_maker(request, Staff.objects.filter(branch_id=branch_id, is_active=True).order_by('last_name')),
+                   'branch_id': branch_id, 'branch_name': branch_name, 'check': archive})
+
+
+@login_required(login_url='entry')
+def staff_branch_archive(request, branch_id):
+    archive = 1
+    branch_name = Branch.objects.get(pk=branch_id).name
+    return render(request, 'belay/staff_branch.html',
+                  {'page_data': page_maker(request, Staff.objects.filter(branch_id=branch_id, is_active=False).order_by('last_name')),
+                   'branch_id': branch_id, 'branch_name': branch_name, 'check': archive})
 
 
 @login_required(login_url='entry')

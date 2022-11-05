@@ -18,7 +18,7 @@
     <img class="rounded-circle icon_data_group_list" src="/media/home.png">
     <div class="d-flex gap-2 w-100 justify-content-between">
         <div>
-            <h6 class="mb-0">{{ item.name }} — {% get_staff_count item.id %} сотруд.</h6>
+            <h6 class="mb-0">{{ item.name }} — {% get_staff_count item.id %} сотруд. - {% get_staff_count_archive item.id %} арх.</h6>
             <p class="d-flex mb-0 opacity-75 mt-2"><img class="telephone_icon" src="/media/telephone.png">{{ item.telephone }}</p>
         </div>
         <small class="opacity-50">г. {{ item.city }}, {{ item.road }}, дом {{ item.house }}, офис {{ item.office }}</small>
