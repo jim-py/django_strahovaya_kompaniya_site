@@ -8,7 +8,11 @@
 <a class="w-25 btn btn-lg btn-primary button_add" href="{% url 'add_news' %}">Добавить новость</a>
 {% endif %}
 <form class="search_form" method="GET" action="{% url 'search_news' %}">
+    {% if search %}
+    <input type="search" class="form-control" name="search" value="{{ search }}">
+    {% else %}
     <input type="search" class="form-control" name="search" placeholder="Поиск по заголовку...">
+    {% endif %}
 </form>
 {% endblock %}
 

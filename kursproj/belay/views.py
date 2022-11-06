@@ -1,11 +1,71 @@
 from django.shortcuts import render, redirect
-from django.views.generic import DeleteView, UpdateView
+from django.views.generic import DeleteView, UpdateView, ListView, CreateView
 from .forms import *
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import login, logout
 from django.contrib import messages
-from django.core.paginator import Paginator
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
+
+class AddNews(LoginRequiredMixin, CreateView):
+    login_url = 'entry'
+    model = News
+    template_name = 'belay/add_news.html'
+    form_class = NewsForm
+    success_url = '/news/'
+
+
+class AddBranch(LoginRequiredMixin, CreateView):
+    login_url = 'entry'
+    model = Branch
+    template_name = 'belay/add_branch.html'
+    form_class = BranchForm
+    success_url = '/branch/'
+
+
+class AddStaff(LoginRequiredMixin, CreateView):
+    login_url = 'entry'
+    model = Staff
+    template_name = 'belay/add_staff.html'
+    form_class = StaffForm
+    success_url = '/staff/'
+
+
+class AddPact(LoginRequiredMixin, CreateView):
+    login_url = 'entry'
+    model = Pact
+    template_name = 'belay/add_pact.html'
+    form_class = PactForm
+    success_url = '/pact/'
+
+
+class IndexSearchNews(LoginRequiredMixin, ListView):
+    login_url = 'entry'
+    model = News
+    template_name = 'belay/news.html'
+    context_object_name = "page_data"
+    paginate_by = 8
+
+    def get_context_data(self, **kwargs):
+        context = super(IndexSearchNews, self).get_context_data(**kwargs)
+        search, page = self.request.GET.get('search'), self.request.GET.get('page')
+
+        get_news = News.objects.all().order_by('-addDate')
+        if search:
+            get_news = get_news.filter(name__icontains=search).order_by('-addDate')
+        paginator = Paginator(get_news, self.paginate_by)
+
+        try:
+            page_data = paginator.page(page)
+        except PageNotAnInteger:
+            page_data = paginator.page(1)
+        except EmptyPage:
+            page_data = paginator.page(paginator.num_pages)
+
+        context['page_data'] = page_data
+        context['search'] = search
+        return context
 
 
 class StaffDeleteView(LoginRequiredMixin, DeleteView):
@@ -110,12 +170,6 @@ def hold_staff(request, pk):
 
 
 @login_required(login_url='entry')
-def news(request):
-    return render(request, 'belay/news.html',
-                  {'page_data': page_maker(request, News.objects.all().order_by('-addDate'))})
-
-
-@login_required(login_url='entry')
 def staff_archive(request):
     return render(request, 'belay/staff_archive.html',
                   {'page_data': page_maker(request, Staff.objects.filter(is_active=False).order_by('last_name'))})
@@ -144,7 +198,8 @@ def get_branch(request, branch_id):
     archive = 0
     branch_name = Branch.objects.get(pk=branch_id).name
     return render(request, 'belay/staff_branch.html',
-                  {'page_data': page_maker(request, Staff.objects.filter(branch_id=branch_id, is_active=True).order_by('last_name')),
+                  {'page_data': page_maker(request, Staff.objects.filter(branch_id=branch_id, is_active=True).order_by(
+                      'last_name')),
                    'branch_id': branch_id, 'branch_name': branch_name, 'check': archive})
 
 
@@ -153,7 +208,8 @@ def staff_branch_archive(request, branch_id):
     archive = 1
     branch_name = Branch.objects.get(pk=branch_id).name
     return render(request, 'belay/staff_branch.html',
-                  {'page_data': page_maker(request, Staff.objects.filter(branch_id=branch_id, is_active=False).order_by('last_name')),
+                  {'page_data': page_maker(request, Staff.objects.filter(branch_id=branch_id, is_active=False).order_by(
+                      'last_name')),
                    'branch_id': branch_id, 'branch_name': branch_name, 'check': archive})
 
 
@@ -176,54 +232,6 @@ def staff_pacts(request, pk):
     worker_pacts = worker.pact_set.all().order_by('-conclusionDate')
     return render(request, 'belay/pact.html',
                   {'page_data': page_maker(request, worker_pacts), 'staff_fio': worker_fio})
-
-
-@login_required(login_url='entry')
-def add_pact(request):
-    if request.method == 'POST':
-        form = PactForm(request.POST)
-        if form.is_valid():
-            Pact.objects.create(**form.cleaned_data)
-            return redirect('pact')
-    else:
-        form = PactForm()
-    return render(request, 'belay/add_pact.html', {'form': form})
-
-
-@login_required(login_url='entry')
-def add_staff(request):
-    if request.method == 'POST':
-        form = StaffForm(request.POST)
-        if form.is_valid():
-            Staff.objects.create(**form.cleaned_data)
-            return redirect('staff')
-    else:
-        form = StaffForm()
-    return render(request, 'belay/add_staff.html', {'form': form})
-
-
-@login_required(login_url='entry')
-def add_branch(request):
-    if request.method == 'POST':
-        form = BranchForm(request.POST)
-        if form.is_valid():
-            Branch.objects.create(**form.cleaned_data)
-            return redirect('branch')
-    else:
-        form = BranchForm()
-    return render(request, 'belay/add_branch.html', {'form': form})
-
-
-@login_required(login_url='entry')
-def add_news(request):
-    if request.method == 'POST':
-        form = NewsForm(request.POST)
-        if form.is_valid():
-            News.objects.create(**form.cleaned_data)
-            return redirect('news')
-    else:
-        form = NewsForm()
-    return render(request, 'belay/add_news.html', {'form': form})
 
 
 @login_required(login_url='entry')
@@ -273,22 +281,10 @@ def get_branch_search(request, branch_id):
             staffs = Staff.objects.filter(is_active=False).order_by('last_name')
         else:
             staffs = Staff.objects.filter(last_name__contains=search_staffs, branch_id=branch_id).order_by('last_name')
-        return render(request, 'belay/staff_branch.html', {'page_data': page_maker(request, staffs), 'branch_id': branch_id})
+        return render(request, 'belay/staff_branch.html',
+                      {'page_data': page_maker(request, staffs), 'branch_id': branch_id})
     else:
         return render(request, "belay/staff_branch.html", {})
-
-
-@login_required(login_url='entry')
-def search_news(request):
-    search_new = request.GET.get('search')
-    if request.method == 'GET':
-        if search_new == "":
-            news_get = News.objects.all().order_by('-addDate')
-        else:
-            news_get = News.objects.filter(name__contains=search_new).order_by('name')
-        return render(request, 'belay/news.html', {'page_data': page_maker(request, news_get)})
-    else:
-        return render(request, "belay/news.html", {})
 
 
 @login_required(login_url='entry')

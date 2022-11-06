@@ -156,6 +156,7 @@ class News(models.Model):
     class Meta:
         verbose_name = 'Новость'
         verbose_name_plural = 'Новости'
+        ordering = ['-addDate']
 
     def __str__(self):
         return self.name
