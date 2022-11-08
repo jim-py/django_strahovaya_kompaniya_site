@@ -74,6 +74,13 @@ class StaffDeleteView(LoginRequiredMixin, DeleteView):
     success_url = '/staff/archive'
     template_name = 'belay/staff_delete.html'
 
+    def get_context_data(self, **kwargs):
+        context = super(StaffDeleteView, self).get_context_data(**kwargs)
+        worker = context['staff']
+        fio = f'{worker.last_name} {worker.first_name} {worker.otchestvo}'
+        context['fio'] = fio
+        return context
+
 
 class StaffUpdateView(LoginRequiredMixin, UpdateView):
     model = Staff
@@ -97,10 +104,16 @@ def profile(request, username):
     else:
         admin = "Нет"
     data = ['s'] * 12
-
+    if user.photo:
+        photo = user.photo
+    else:
+        photo = '/media/user.png'
     data[0] = f"ФИО: {user.last_name} {user.first_name} {user.otchestvo}"
     data[1] = f"Телефон: {user.telephone}"
-    data[2] = f"День рождения: {user.birthday.strftime('%d.%m.%Y г.')}"
+    if user.birthday:
+        data[2] = f"День рождения: {user.birthday.strftime('%d.%m.%Y г.')}"
+    else:
+        data[2] = f"День рождения: {user.birthday}"
     data[3] = f"Роль: {user.role}"
     data[4] = f"Филиал: {user.branch}"
     data[5] = f"Должность: {user.post}"
@@ -111,7 +124,7 @@ def profile(request, username):
     data[10] = f"Адрес: г. {user.city}, улица {user.road}, дом {user.house}, квартира {user.flat}"
     data[11] = f"Дата регистрации: {user.date_joined.strftime('%d.%m.%Y г.')}"
 
-    return render(request, 'belay/profile.html', {'profile': data, 'username': user.username, 'pk': pk})
+    return render(request, 'belay/profile.html', {'profile': data, 'username': user.username, 'pk': pk, 'photo': photo})
 
 
 def entry(request):

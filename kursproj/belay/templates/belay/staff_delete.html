@@ -4,11 +4,12 @@
 
 {% block content %}
 
-<div class="container">
-    <h1>Подтверждение</h1>
+<div class="container main-container-adding">
+    <h1>Вы собираетесь уволить:</h1>
+    <h2>{{ fio }}</h2>
     <form method="post">
         {% csrf_token %}
-        <button class="w-25 btn btn-danger" type="submit">Уволить</button>
+        <button class="w-25 btn btn-lg btn-danger" style="margin-top: 20px;" type="submit">Уволить</button>
     </form>
 </div>
 
