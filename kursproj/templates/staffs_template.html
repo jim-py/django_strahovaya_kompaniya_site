@@ -8,7 +8,7 @@
     <div class="container">
         <div class="d-flex align-items-center">
             {% if request.user.is_staff %}
-            <a class="w-25 btn btn-lg btn-primary button_add" href="{% url 'add_staff' %}">Добавить сотрудника</a>
+            <a class="w-25 btn btn-lg btn-primary button_add" href="{% url 'add_staff' %}">Добавить работника</a>
             {% endif %}
             {% block archive %}{% endblock %}
             {% block search %}
@@ -66,7 +66,7 @@
         <div class="fs-3 fw-bold">Филиал: {{ branch_name }}</div>
         {% else %}
         {% endif %}
-        <div class="row row-cols-md-4 g-5">
+        <div class="row row-cols-md-3 g-5">
             {% for item in page_data %}
             <div class="col">
                 <div class="card staff_card">

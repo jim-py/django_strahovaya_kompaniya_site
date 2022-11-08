@@ -40,12 +40,54 @@ class AddPact(LoginRequiredMixin, CreateView):
     success_url = '/pact/'
 
 
+def pagination_maker(x, z):
+    paginator = Paginator(x, 9)
+
+    try:
+        page_data = paginator.page(z)
+    except PageNotAnInteger:
+        page_data = paginator.page(1)
+    except EmptyPage:
+        page_data = paginator.page(paginator.num_pages)
+
+    return page_data
+
+
+class IndexSearchPact(LoginRequiredMixin, ListView):
+    login_url = 'entry'
+    model = Pact
+    template_name = 'belay/pact.html'
+    context_object_name = "page_data"
+
+    def get_context_data(self, **kwargs):
+        context = super(IndexSearchPact, self).get_context_data(**kwargs)
+        search, page = self.request.GET.get('search'), self.request.GET.get('page')
+
+        if 'pk' in self.kwargs:
+            worker = Staff.objects.get(pk=self.kwargs['pk'])
+            context['worker_fio'] = f'{worker.last_name} {worker.first_name} {worker.otchestvo}'
+            if search:
+                get_pacts = [x for x in worker.pact_set.filter(archive=False).order_by('-conclusionDate') if search.lower() in x.client.surname.lower()]
+            else:
+                get_pacts = worker.pact_set.filter(archive=False).order_by('-conclusionDate')
+        else:
+            if search:
+                get_pacts = []
+                for client in Client.objects.filter(surname__icontains=search):
+                    get_pacts += client.pact_set.filter(archive=False)
+            else:
+                get_pacts = Pact.objects.filter(archive=False).order_by('-conclusionDate')
+
+        context['page_data'] = pagination_maker(get_pacts, page)
+        context['search'] = search
+        return context
+
+
 class IndexSearchNews(LoginRequiredMixin, ListView):
     login_url = 'entry'
     model = News
     template_name = 'belay/news.html'
     context_object_name = "page_data"
-    paginate_by = 8
 
     def get_context_data(self, **kwargs):
         context = super(IndexSearchNews, self).get_context_data(**kwargs)
@@ -54,16 +96,8 @@ class IndexSearchNews(LoginRequiredMixin, ListView):
         get_news = News.objects.all().order_by('-addDate')
         if search:
             get_news = get_news.filter(name__icontains=search).order_by('-addDate')
-        paginator = Paginator(get_news, self.paginate_by)
 
-        try:
-            page_data = paginator.page(page)
-        except PageNotAnInteger:
-            page_data = paginator.page(1)
-        except EmptyPage:
-            page_data = paginator.page(paginator.num_pages)
-
-        context['page_data'] = page_data
+        context['page_data'] = pagination_maker(get_news, page)
         context['search'] = search
         return context
 
@@ -94,37 +128,25 @@ class StaffUpdateView(LoginRequiredMixin, UpdateView):
 @login_required(login_url='entry')
 def profile(request, username):
     user = Staff.objects.get(username=username)
-    pk = Staff.objects.get(username=username).pk
-    if user.is_superuser:
-        su = "Да"
-    else:
-        su = "Нет"
-    if user.is_staff:
-        admin = "Да"
-    else:
-        admin = "Нет"
-    data = ['s'] * 12
-    if user.photo:
-        photo = user.photo
-    else:
-        photo = '/media/user.png'
-    data[0] = f"ФИО: {user.last_name} {user.first_name} {user.otchestvo}"
-    data[1] = f"Телефон: {user.telephone}"
-    if user.birthday:
-        data[2] = f"День рождения: {user.birthday.strftime('%d.%m.%Y г.')}"
-    else:
-        data[2] = f"День рождения: {user.birthday}"
-    data[3] = f"Роль: {user.role}"
-    data[4] = f"Филиал: {user.branch}"
-    data[5] = f"Должность: {user.post}"
-    data[6] = f"Логин: {user.username}"
-    data[7] = f"Почта: {user.email}"
-    data[8] = f"Админ: {admin}"
-    data[9] = f"Суперпользователь: {su}"
-    data[10] = f"Адрес: г. {user.city}, улица {user.road}, дом {user.house}, квартира {user.flat}"
-    data[11] = f"Дата регистрации: {user.date_joined.strftime('%d.%m.%Y г.')}"
 
-    return render(request, 'belay/profile.html', {'profile': data, 'username': user.username, 'pk': pk, 'photo': photo})
+    su = 'Да' if user.is_superuser else 'Нет'
+    admin = 'Да' if user.is_staff else 'Нет'
+    photo = user.photo if user.photo else '/media/user.png'
+
+    data = {'ФИО': f"{user.last_name} {user.first_name} {user.otchestvo}",
+            'Телефон': user.telephone,
+            'День рождения': user.birthday.strftime('%d.%m.%Y г.') if user.birthday else user.birthday,
+            'Роль': user.role,
+            'Филиал': user.branch,
+            'Должность': user.post,
+            'Логин': user.username,
+            'Почта': user.email,
+            'Админ': admin,
+            'Суперпользователь': su,
+            'Адрес': f"г. {user.city}, улица {user.road}, дом {user.house}, квартира {user.flat}",
+            'Дата регистрации': user.date_joined.strftime('%d.%m.%Y г.')}
+
+    return render(request, 'belay/profile.html', {'profile': data, 'username': user.username, 'pk': user.pk, 'photo': photo})
 
 
 def entry(request):
@@ -161,7 +183,7 @@ def registration(request):
 
 
 def page_maker(request, massive):
-    paginator = Paginator(massive, 8)
+    paginator = Paginator(massive, 9)
     page_num = request.GET.get('page', 1)
     return paginator.get_page(page_num)
 
@@ -201,12 +223,6 @@ def branch(request):
 
 
 @login_required(login_url='entry')
-def pact(request):
-    return render(request, 'belay/pact.html',
-                  {'page_data': page_maker(request, Pact.objects.filter(archive=False).order_by('-conclusionDate'))})
-
-
-@login_required(login_url='entry')
 def get_branch(request, branch_id):
     archive = 0
     branch_name = Branch.objects.get(pk=branch_id).name
@@ -236,15 +252,6 @@ def calendar_staff_pacts(request, pk, year, month):
         month = '0' + str(month)
     return render(request, 'belay/graphic.html',
                   {'pact': worker_pacts, 'staff_fio': worker_fio, 'year': year, 'month': month})
-
-
-@login_required(login_url='entry')
-def staff_pacts(request, pk):
-    worker = Staff.objects.get(pk=pk)
-    worker_fio = worker.last_name + ' ' + worker.first_name + ' ' + worker.otchestvo
-    worker_pacts = worker.pact_set.all().order_by('-conclusionDate')
-    return render(request, 'belay/pact.html',
-                  {'page_data': page_maker(request, worker_pacts), 'staff_fio': worker_fio})
 
 
 @login_required(login_url='entry')
@@ -298,18 +305,3 @@ def get_branch_search(request, branch_id):
                       {'page_data': page_maker(request, staffs), 'branch_id': branch_id})
     else:
         return render(request, "belay/staff_branch.html", {})
-
-
-@login_required(login_url='entry')
-def search_pact(request):
-    search_pacts = request.GET.get('search')
-    if request.method == 'GET':
-        if search_pacts == "":
-            pacts = Pact.objects.filter(archive=False).order_by('-conclusionDate')
-        else:
-            pacts = []
-            for _ in Client.objects.filter(surname__contains=search_pacts):
-                pacts += _.pact_set.filter(archive=False)
-        return render(request, 'belay/pact.html', {'page_data': page_maker(request, pacts)})
-    else:
-        return render(request, "belay/pact.html", {})

@@ -7,12 +7,16 @@
 {% if request.user.is_staff %}
 <a class="w-25 btn btn-lg btn-primary button_add" href="{% url 'add_pact' %}">Добавить договор</a>
 {% endif %}
-<form class="search_form" method="GET" action="{% url 'search_pact' %}">
+<form class="search_form" method="GET" action="{{ check }}">
+    {% if search %}
+    <input type="search" class="form-control" name="search" value="{{ search }}">
+    {% else %}
     <input type="search" class="form-control" name="search" placeholder="Поиск по фамилии...">
+    {% endif %}
 </form>
 {% endblock %}
 
-{% block staff_fio %} <div class="fs-2 fw-bold">{{ staff_fio }}</div> {% endblock %}
+{% block staff_fio %} <div class="fs-2 fw-bold">{{ worker_fio }}</div> {% endblock %}
 
 {% block out_data_list %}
 <a class="list-group-item list-group-item-action d-flex gap-3 py-3 rounded-4 list_group_data"

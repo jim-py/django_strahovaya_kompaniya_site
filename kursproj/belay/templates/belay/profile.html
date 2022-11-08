@@ -9,8 +9,8 @@
     <a class="btn btn-primary btn-lg w-25" href="{% url 'edit_profile' username pk %}">Изменить</a>
     <p></p>
     <img class="rounded-circle staff_photo" src="{{ photo }}">
-    {% for item in profile %}
-    <div class="fs-3">{{ item }}</div>
+    {% for key, value in profile.items %}
+    <div class="fs-3">{{ key }}: {{ value }}</div>
     {% endfor %}
 </div>
 

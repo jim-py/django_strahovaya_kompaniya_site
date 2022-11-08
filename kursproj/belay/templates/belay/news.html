@@ -7,7 +7,7 @@
 {% if request.user.is_staff %}
 <a class="w-25 btn btn-lg btn-primary button_add" href="{% url 'add_news' %}">Добавить новость</a>
 {% endif %}
-<form class="search_form" method="GET" action="{% url 'search_news' %}">
+<form class="search_form" method="GET" action="{% url 'news' %}">
     {% if search %}
     <input type="search" class="form-control" name="search" value="{{ search }}">
     {% else %}

@@ -17,6 +17,7 @@ class Pact(models.Model):
     class Meta:
         verbose_name = 'Договор'
         verbose_name_plural = 'Договоры'
+        ordering = ['-conclusionDate']
 
     def __str__(self):
         return str(self.client)

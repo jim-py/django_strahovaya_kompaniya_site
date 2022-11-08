@@ -10,11 +10,10 @@ urlpatterns = [
 
     path('news/', IndexSearchNews.as_view(), name='news'),
     path('news/add', AddNews.as_view(), name='add_news'),
-    path('news/search', IndexSearchNews.as_view(), name='search_news'),
+    path('staff/pacts/<int:pk>', IndexSearchPact.as_view(), name='staff_pacts'),
 
-    path('pact/', pact, name='pact'),
+    path('pact/', IndexSearchPact.as_view(), name='pact'),
     path('pact/add', AddPact.as_view(), name='add_pact'),
-    path('pact/search', search_pact, name='search_pact'),
 
     path('branch/', branch, name='branch'),
     path('branch/add', AddBranch.as_view(), name='add_branch'),
@@ -27,7 +26,6 @@ urlpatterns = [
     path('staff/add', AddStaff.as_view(), name='add_staff'),
     path('staff/search', search_staff, name='search_staff'),
     path('staff/archive/search', search_staff_archive, name='search_staff_archive'),
-    path('staff/pacts/<int:pk>', staff_pacts, name='staff_pacts'),
     path('staff/pacts/<int:pk>/<int:year>/<int:month>', calendar_staff_pacts, name='calendar_staff_pacts'),
     path('staff/archive', staff_archive, name='staff_archive'),
     path('staff/archive/<int:pk>', staff_return, name='staff_return'),
