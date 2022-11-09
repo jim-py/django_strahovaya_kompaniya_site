@@ -7,8 +7,13 @@
 
 <div style="background-color: white; width: 1000px; padding: 16px; margin: 15px auto; border-radius: 15px" class="container main-container">
     <a class="btn btn-primary btn-lg w-25" href="{% url 'edit_profile' username pk %}">Изменить</a>
-    <p></p>
-    <img class="rounded-circle staff_photo" src="{{ photo }}">
+    <form style="margin-top: 15px;" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label class="label_photo btn btn-outline-primary w-25" style="margin-right: 5px" for="upload-photo">Загрузка фото...</label>
+        <input id="upload-photo" type="file" name="photo_upload" accept=".jpg, .jpeg, .png">
+        <button class="btn btn-outline-primary" type="submit">Подтвердить</button>
+    </form>
+    <img class="rounded-circle staff_photo" style="margin-bottom: 15px" src="{{ photo }}">
     {% for key, value in profile.items %}
     <div class="fs-3">{{ key }}: {{ value }}</div>
     {% endfor %}

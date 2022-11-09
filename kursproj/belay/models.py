@@ -32,11 +32,12 @@ class Branch(models.Model):
     telephone = models.CharField(max_length=12, verbose_name='Телефон')
 
     def get_absolute_url(self):
-        return reverse('branch', kwargs={"branch_id": self.pk})
+        return reverse('staff_branch', kwargs={"branch_id": self.pk})
 
     class Meta:
         verbose_name = 'Филиал'
         verbose_name_plural = 'Филиалы'
+        ordering = ['name']
 
     def __str__(self):
         return self.name
@@ -74,6 +75,7 @@ class Staff(AbstractUser):
     class Meta:
         verbose_name = 'Сотрудник'
         verbose_name_plural = 'Сотрудники'
+        ordering = ['last_name']
 
     def __str__(self):
         return self.first_name

@@ -6,6 +6,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import login, logout
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core.files.storage import FileSystemStorage
 
 
 class AddNews(LoginRequiredMixin, CreateView):
@@ -53,14 +54,74 @@ def pagination_maker(x, z):
     return page_data
 
 
-class IndexSearchPact(LoginRequiredMixin, ListView):
+class ViewSearchStaff(LoginRequiredMixin, ListView):
+    login_url = 'entry'
+    model = Staff
+    context_object_name = "page_data"
+
+    def get_context_data(self, **kwargs):
+        context = super(ViewSearchStaff, self).get_context_data(**kwargs)
+        search, page = self.request.GET.get('search'), self.request.GET.get('page')
+
+        if 'branch_id' in self.kwargs:
+            if self.extra_context['archive']:
+                context['branch_id'] = self.kwargs['branch_id']
+                get_staff = Staff.objects.filter(is_active=False, branch_id=self.kwargs['branch_id']).order_by('last_name')
+                if search:
+                    get_staff = get_staff.filter(is_active=False, branch_id=self.kwargs['branch_id'], last_name__icontains=search).order_by('last_name')
+            else:
+                context['branch_id'] = self.kwargs['branch_id']
+                get_staff = Staff.objects.filter(is_active=True, branch_id=self.kwargs['branch_id']).order_by('last_name')
+                if search:
+                    get_staff = get_staff.filter(is_active=True, branch_id=self.kwargs['branch_id'], last_name__icontains=search).order_by('last_name')
+        else:
+            if self.extra_context['archive']:
+                get_staff = Staff.objects.filter(is_active=False).order_by('last_name')
+                if search:
+                    get_staff = get_staff.filter(is_active=False, last_name__icontains=search).order_by('last_name')
+            else:
+                get_staff = Staff.objects.filter(is_active=True).order_by('last_name')
+                if search:
+                    get_staff = get_staff.filter(is_active=True, last_name__icontains=search).order_by('last_name')
+
+        context['page_data'] = pagination_maker(get_staff, page)
+        context['search'] = search
+        return context
+
+    def get_template_names(self):
+        if self.extra_context['archive']:
+            return ['belay/staff_archive.html']
+        else:
+            return ['belay/staff.html']
+
+
+class ViewSearchBranch(LoginRequiredMixin, ListView):
+    login_url = 'entry'
+    model = Branch
+    template_name = 'belay/branch.html'
+    context_object_name = "page_data"
+
+    def get_context_data(self, **kwargs):
+        context = super(ViewSearchBranch, self).get_context_data(**kwargs)
+        search, page = self.request.GET.get('search'), self.request.GET.get('page')
+
+        get_branches = Branch.objects.all().order_by('name')
+        if search:
+            get_branches = get_branches.filter(name__icontains=search).order_by('name')
+
+        context['page_data'] = pagination_maker(get_branches, page)
+        context['search'] = search
+        return context
+
+
+class ViewSearchPact(LoginRequiredMixin, ListView):
     login_url = 'entry'
     model = Pact
     template_name = 'belay/pact.html'
     context_object_name = "page_data"
 
     def get_context_data(self, **kwargs):
-        context = super(IndexSearchPact, self).get_context_data(**kwargs)
+        context = super(ViewSearchPact, self).get_context_data(**kwargs)
         search, page = self.request.GET.get('search'), self.request.GET.get('page')
 
         if 'pk' in self.kwargs:
@@ -83,14 +144,14 @@ class IndexSearchPact(LoginRequiredMixin, ListView):
         return context
 
 
-class IndexSearchNews(LoginRequiredMixin, ListView):
+class ViewSearchNews(LoginRequiredMixin, ListView):
     login_url = 'entry'
     model = News
     template_name = 'belay/news.html'
     context_object_name = "page_data"
 
     def get_context_data(self, **kwargs):
-        context = super(IndexSearchNews, self).get_context_data(**kwargs)
+        context = super(ViewSearchNews, self).get_context_data(**kwargs)
         search, page = self.request.GET.get('search'), self.request.GET.get('page')
 
         get_news = News.objects.all().order_by('-addDate')
@@ -102,21 +163,21 @@ class IndexSearchNews(LoginRequiredMixin, ListView):
         return context
 
 
-class StaffDeleteView(LoginRequiredMixin, DeleteView):
+class DeleteStaff(LoginRequiredMixin, DeleteView):
     login_url = 'entry'
     model = Staff
     success_url = '/staff/archive'
     template_name = 'belay/staff_delete.html'
 
     def get_context_data(self, **kwargs):
-        context = super(StaffDeleteView, self).get_context_data(**kwargs)
+        context = super(DeleteStaff, self).get_context_data(**kwargs)
         worker = context['staff']
         fio = f'{worker.last_name} {worker.first_name} {worker.otchestvo}'
         context['fio'] = fio
         return context
 
 
-class StaffUpdateView(LoginRequiredMixin, UpdateView):
+class UpdateProfile(LoginRequiredMixin, UpdateView):
     model = Staff
     form_class = CustomUserChangeForm
     template_name = 'belay/edit_profile.html'
@@ -145,8 +206,17 @@ def profile(request, username):
             'Суперпользователь': su,
             'Адрес': f"г. {user.city}, улица {user.road}, дом {user.house}, квартира {user.flat}",
             'Дата регистрации': user.date_joined.strftime('%d.%m.%Y г.')}
-
-    return render(request, 'belay/profile.html', {'profile': data, 'username': user.username, 'pk': user.pk, 'photo': photo})
+    if request.method == 'POST' and request.FILES:
+        file = request.FILES['photo_upload']
+        fss = FileSystemStorage()
+        filename = fss.save(file.name, file)
+        file_url = fss.url(filename)
+        user.photo = file_url
+        user.save(update_fields=["photo"])
+        return render(request, 'belay/profile.html',
+                      {'profile': data, 'username': user.username, 'pk': user.pk, 'photo': user.photo})
+    return render(request, 'belay/profile.html',
+                  {'profile': data, 'username': user.username, 'pk': user.pk, 'photo': photo})
 
 
 def entry(request):
@@ -182,14 +252,9 @@ def registration(request):
     return render(request, 'belay/registration.html', {'form': form})
 
 
-def page_maker(request, massive):
-    paginator = Paginator(massive, 9)
-    page_num = request.GET.get('page', 1)
-    return paginator.get_page(page_num)
-
-
 @login_required(login_url='entry')
 def staff_return(request, pk):
+    print(request.path)
     worker = Staff.objects.get(pk=pk)
     worker.is_active = True
     worker.save(update_fields=["is_active"])
@@ -205,44 +270,6 @@ def hold_staff(request, pk):
 
 
 @login_required(login_url='entry')
-def staff_archive(request):
-    return render(request, 'belay/staff_archive.html',
-                  {'page_data': page_maker(request, Staff.objects.filter(is_active=False).order_by('last_name'))})
-
-
-@login_required(login_url='entry')
-def staff(request):
-    return render(request, 'belay/staff.html',
-                  {'page_data': page_maker(request, Staff.objects.filter(is_active=True).order_by('last_name'))})
-
-
-@login_required(login_url='entry')
-def branch(request):
-    return render(request, 'belay/branch.html',
-                  {'page_data': page_maker(request, Branch.objects.all().order_by('name'))})
-
-
-@login_required(login_url='entry')
-def get_branch(request, branch_id):
-    archive = 0
-    branch_name = Branch.objects.get(pk=branch_id).name
-    return render(request, 'belay/staff_branch.html',
-                  {'page_data': page_maker(request, Staff.objects.filter(branch_id=branch_id, is_active=True).order_by(
-                      'last_name')),
-                   'branch_id': branch_id, 'branch_name': branch_name, 'check': archive})
-
-
-@login_required(login_url='entry')
-def staff_branch_archive(request, branch_id):
-    archive = 1
-    branch_name = Branch.objects.get(pk=branch_id).name
-    return render(request, 'belay/staff_branch.html',
-                  {'page_data': page_maker(request, Staff.objects.filter(branch_id=branch_id, is_active=False).order_by(
-                      'last_name')),
-                   'branch_id': branch_id, 'branch_name': branch_name, 'check': archive})
-
-
-@login_required(login_url='entry')
 def calendar_staff_pacts(request, pk, year, month):
     worker = Staff.objects.get(pk=pk)
     worker_fio = worker.last_name + ' ' + worker.first_name + ' ' + worker.otchestvo
@@ -252,56 +279,3 @@ def calendar_staff_pacts(request, pk, year, month):
         month = '0' + str(month)
     return render(request, 'belay/graphic.html',
                   {'pact': worker_pacts, 'staff_fio': worker_fio, 'year': year, 'month': month})
-
-
-@login_required(login_url='entry')
-def search_branch(request):
-    branch_name = request.GET.get('search')
-    if request.method == 'GET':
-        if branch_name == "":
-            place = Branch.objects.all().order_by('first_name')
-        else:
-            place = Branch.objects.filter(name__contains=branch_name).order_by('name')
-        return render(request, 'belay/branch.html', {'page_data': page_maker(request, place)})
-    else:
-        return render(request, "belay/branch.html")
-
-
-@login_required(login_url='entry')
-def search_staff(request):
-    search_staffs = request.GET.get('search')
-    if request.method == 'GET':
-        if search_staffs == "":
-            staffs = Staff.objects.all().order_by('last_name')
-        else:
-            staffs = Staff.objects.filter(last_name__contains=search_staffs).order_by('last_name')
-        return render(request, 'belay/staff.html', {'page_data': page_maker(request, staffs)})
-    else:
-        return render(request, "belay/staff.html", {})
-
-
-@login_required(login_url='entry')
-def search_staff_archive(request):
-    search_staffs = request.GET.get('search')
-    if request.method == 'GET':
-        if search_staffs == "":
-            staffs = Staff.objects.filter(is_active=False).order_by('last_name')
-        else:
-            staffs = Staff.objects.filter(last_name__contains=search_staffs, is_active=False).order_by('last_name')
-        return render(request, 'belay/staff_archive.html', {'page_data': page_maker(request, staffs)})
-    else:
-        return render(request, "belay/staff_archive.html", {})
-
-
-@login_required(login_url='entry')
-def get_branch_search(request, branch_id):
-    search_staffs = request.GET.get('search')
-    if request.method == 'GET':
-        if search_staffs == "":
-            staffs = Staff.objects.filter(is_active=False).order_by('last_name')
-        else:
-            staffs = Staff.objects.filter(last_name__contains=search_staffs, branch_id=branch_id).order_by('last_name')
-        return render(request, 'belay/staff_branch.html',
-                      {'page_data': page_maker(request, staffs), 'branch_id': branch_id})
-    else:
-        return render(request, "belay/staff_branch.html", {})

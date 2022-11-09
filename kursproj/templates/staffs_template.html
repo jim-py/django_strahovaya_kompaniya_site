@@ -10,11 +10,25 @@
             {% if request.user.is_staff %}
             <a class="w-25 btn btn-lg btn-primary button_add" href="{% url 'add_staff' %}">Добавить работника</a>
             {% endif %}
-            {% block archive %}{% endblock %}
+
+            {% block archive %}
+                {% if branch_id %}
+                <a class="w-25 btn btn-lg btn-outline-primary button_adds" href="{% url 'staff_archive_branch' branch_id %}">В архив</a>
+                {% else %}
+                <a class="w-25 btn btn-lg btn-outline-primary button_adds" href="{% url 'staff_archive' %}">В архив</a>
+                {% endif %}
+            {% endblock %}
+
             {% block search %}
-            <form class="search_form" method="GET" action="{% url 'search_staff' %}">
-                <input type="search" class="form-control" name="search" placeholder="Поиск по фамилии...">
-            </form>
+                {% if branch_id %}
+                <form class="search_form" method="GET" action="{% url 'staff_branch' branch_id %}">
+                    <input type="search" class="form-control" name="search" placeholder="Поиск по фамилии...">
+                </form>
+                {% else %}
+                <form class="search_form" method="GET" action="{% url 'staff' %}">
+                    <input type="search" class="form-control" name="search" placeholder="Поиск по фамилии...">
+                </form>
+                {% endif %}
             {% endblock %}
         </div>
 
@@ -66,6 +80,7 @@
         <div class="fs-3 fw-bold">Филиал: {{ branch_name }}</div>
         {% else %}
         {% endif %}
+        {% if page_data %}
         <div class="row row-cols-md-3 g-5">
             {% for item in page_data %}
             <div class="col">
@@ -112,6 +127,8 @@
             </div>
             {% endfor %}
         </div>
+        {% else %}
+        {% endif %}
     </div>
 </div>
 </div>

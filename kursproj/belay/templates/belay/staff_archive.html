@@ -3,12 +3,23 @@
 {% block title %}Архив сотрудников{% endblock %}
 
 {% block archive %}
-<a class="w-25 btn btn-lg btn-outline-primary button_adds" href="{% url 'staff' %}">Выйти из архива</a>
+    {% if branch_id %}
+    <a class="w-25 btn btn-lg btn-outline-primary button_adds" href="{% url 'staff_branch' branch_id %}">Выйти из архива</a>
+    {% else %}
+    <a class="w-25 btn btn-lg btn-outline-primary button_adds" href="{% url 'staff' %}">Выйти из архива</a>
+    {% endif %}
 {% endblock %}
+
 {% block search %}
-<form class="search_form" method="GET" action="{% url 'search_staff_archive' %}">
-    <input type="search" class="form-control" name="search" placeholder="Поиск по фамилии...">
-</form>
+    {% if branch_id %}
+    <form class="search_form" method="GET" action="{% url 'staff_archive_branch' branch_id %}">
+        <input type="search" class="form-control" name="search" placeholder="Поиск по фамилии...">
+    </form>
+    {% else %}
+    <form class="search_form" method="GET" action="{% url 'staff_archive' %}">
+        <input type="search" class="form-control" name="search" placeholder="Поиск по фамилии...">
+    </form>
+    {% endif %}
 {% endblock %}
 
 {% block card_buttons %}
