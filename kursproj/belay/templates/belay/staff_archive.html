@@ -24,7 +24,7 @@
 
 {% block card_buttons %}
 <a class="btn btn-outline-primary staff_bottom_buttons fw-bold"
-   href="{% url 'staff_return' item.pk %}">Вернуть из архива</a>
+   href="{% url 'staff_to_archive' item.pk %}">Вернуть из архива</a>
 <a class="btn btn-outline-danger staff_bottom_buttons fw-bold"
-   href="{% url 'staff-delete' item.pk %}">Уволить</a>
+   href="{% url 'staff_delete' item.pk %}">Уволить</a>
 {% endblock %}

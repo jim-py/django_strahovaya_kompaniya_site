@@ -9,6 +9,8 @@
     <h2>{{ fio }}</h2>
     <form method="post">
         {% csrf_token %}
+        <input type="hidden" name="previous_page" value="{{request.META.HTTP_REFERER}}">
+        <button class="w-25 btn btn-lg btn-primary" style="margin-top: 20px;" href="{{request.META.HTTP_REFERER}}">Отмена</button>
         <button class="w-25 btn btn-lg btn-danger" style="margin-top: 20px;" type="submit">Уволить</button>
     </form>
 </div>

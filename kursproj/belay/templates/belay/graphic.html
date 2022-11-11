@@ -20,7 +20,7 @@
         <div class="btn-toolbar">
           <form>
             <p>
-              <input id="monthcalen" type="month" name="month" max="2022-10" min="2021-10" value="{{ year }}-{{ month }}">
+              <input id="monthcalen" type="month" name="month" max="{{ max_date }}" min="{{ min_date }}" value="{{ year }}-{{ month }}">
               <input class="btn btn-outline-secondary" id="clickMe" type="button" value="Посмотреть отчёт">
             </p>
           </form>

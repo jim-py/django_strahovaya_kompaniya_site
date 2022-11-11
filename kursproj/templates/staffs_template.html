@@ -116,10 +116,10 @@
                         <a class="btn btn-outline-primary staff_bottom_buttons fw-bold"
                            href="{% url 'staff_pacts' item.pk %}">Посмотреть договоры</a>
                         <a class="btn btn-outline-primary staff_bottom_buttons fw-bold"
-                           href="{% url 'calendar_staff_pacts' item.pk 2022 10 %}">График зарплат</a>
+                           href="{% url 'staff_graphic' item.pk year month %}">График зарплат</a>
                         {% block card_buttons %}
                         <a class="btn btn-outline-danger staff_bottom_buttons fw-bold"
-                           href="{% url 'hold_staff' item.pk %}">Убрать в архив</a>
+                           href="{% url 'staff_to_archive' item.pk %}">Убрать в архив</a>
                         {% endblock %}
                         {% endif %}
                     </div>

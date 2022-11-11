@@ -1,3 +1,4 @@
+from django.http import HttpResponseRedirect, HttpResponseNotFound
 from django.shortcuts import render, redirect
 from django.views.generic import DeleteView, UpdateView, ListView, CreateView
 from .forms import *
@@ -7,6 +8,7 @@ from django.contrib.auth import login, logout
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.files.storage import FileSystemStorage
+from datetime import datetime
 
 
 class AddNews(LoginRequiredMixin, CreateView):
@@ -39,6 +41,31 @@ class AddPact(LoginRequiredMixin, CreateView):
     template_name = 'belay/add_pact.html'
     form_class = PactForm
     success_url = '/pact/'
+
+
+class UpdateProfile(LoginRequiredMixin, UpdateView):
+    model = Staff
+    form_class = CustomUserChangeForm
+    template_name = 'belay/edit_profile.html'
+
+    def get_success_url(self):
+        return reverse("profile", kwargs={"username": self.kwargs["username"]})
+
+
+class DeleteStaff(LoginRequiredMixin, DeleteView):
+    login_url = 'entry'
+    model = Staff
+    template_name = 'belay/staff_delete.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(DeleteStaff, self).get_context_data(**kwargs)
+        worker = context['staff']
+        fio = f'{worker.last_name} {worker.first_name} {worker.otchestvo}'
+        context['fio'] = fio
+        return context
+
+    def get_success_url(self):
+        return self.request.POST.get('previous_page', '/')
 
 
 def pagination_maker(x, z):
@@ -86,6 +113,9 @@ class ViewSearchStaff(LoginRequiredMixin, ListView):
 
         context['page_data'] = pagination_maker(get_staff, page)
         context['search'] = search
+        today = datetime.today()
+        context['month'] = today.strftime("%m")
+        context['year'] = today.strftime("%Y")
         return context
 
     def get_template_names(self):
@@ -163,29 +193,6 @@ class ViewSearchNews(LoginRequiredMixin, ListView):
         return context
 
 
-class DeleteStaff(LoginRequiredMixin, DeleteView):
-    login_url = 'entry'
-    model = Staff
-    success_url = '/staff/archive'
-    template_name = 'belay/staff_delete.html'
-
-    def get_context_data(self, **kwargs):
-        context = super(DeleteStaff, self).get_context_data(**kwargs)
-        worker = context['staff']
-        fio = f'{worker.last_name} {worker.first_name} {worker.otchestvo}'
-        context['fio'] = fio
-        return context
-
-
-class UpdateProfile(LoginRequiredMixin, UpdateView):
-    model = Staff
-    form_class = CustomUserChangeForm
-    template_name = 'belay/edit_profile.html'
-
-    def get_success_url(self):
-        return reverse("profile", kwargs={"username": self.kwargs["username"]})
-
-
 @login_required(login_url='entry')
 def profile(request, username):
     user = Staff.objects.get(username=username)
@@ -253,29 +260,28 @@ def registration(request):
 
 
 @login_required(login_url='entry')
-def staff_return(request, pk):
-    print(request.path)
+def staff_to_archive(request, pk):
     worker = Staff.objects.get(pk=pk)
-    worker.is_active = True
+    worker.is_active = True if 'archive' in request.META.get('HTTP_REFERER') else False
     worker.save(update_fields=["is_active"])
-    return redirect('staff_archive')
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
 @login_required(login_url='entry')
-def hold_staff(request, pk):
-    worker = Staff.objects.get(pk=pk)
-    worker.is_active = False
-    worker.save(update_fields=["is_active"])
-    return redirect('staff')
-
-
-@login_required(login_url='entry')
-def calendar_staff_pacts(request, pk, year, month):
+def staff_graphic(request, pk, year, month):
+    today = datetime.today()
+    if not int(today.strftime("%Y")) - 11 < year < int(today.strftime("%Y")) + 1:
+        return HttpResponseNotFound("WRONG DATE")
+    elif year == int(today.strftime("%Y")) - 10 and month < int(today.strftime("%m")):
+        return HttpResponseNotFound("WRONG DATE")
+    elif year == int(today.strftime("%Y")) and month > int(today.strftime("%m")):
+        return HttpResponseNotFound("WRONG DATE")
     worker = Staff.objects.get(pk=pk)
     worker_fio = worker.last_name + ' ' + worker.first_name + ' ' + worker.otchestvo
-    worker_pacts = worker.pact_set.filter(conclusionDate__year=year, conclusionDate__month=month).order_by(
-        '-conclusionDate')
+    worker_pacts = worker.pact_set.filter(conclusionDate__year=year, conclusionDate__month=month).order_by('-conclusionDate')
     if len(str(month)) == 1:
         month = '0' + str(month)
+    max_date = f'{today.strftime("%Y")}-{today.strftime("%m")}'
+    min_date = f'{int(today.strftime("%Y")) - 10}-{today.strftime("%m")}'
     return render(request, 'belay/graphic.html',
-                  {'pact': worker_pacts, 'staff_fio': worker_fio, 'year': year, 'month': month})
+                  {'pact': worker_pacts, 'staff_fio': worker_fio, 'year': year, 'month': month, 'max_date': max_date, 'min_date': min_date})

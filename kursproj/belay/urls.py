@@ -24,8 +24,7 @@ urlpatterns = [
     path('staff/branch/<int:branch_id>/archive/', ViewSearchStaff.as_view(extra_context={'archive': 1}), name='staff_archive_branch'),
 
     path('staff/add', AddStaff.as_view(), name='add_staff'),
-    path('staff/pacts/<int:pk>/<int:year>/<int:month>', calendar_staff_pacts, name='calendar_staff_pacts'),
-    path('staff/<int:pk>', hold_staff, name='hold_staff'),
-    path('staff/archive/<int:pk>', staff_return, name='staff_return'),
-    path('staff/<int:pk>/delete', DeleteStaff.as_view(), name='staff-delete'),
+    path('staff/<int:pk>', staff_to_archive, name='staff_to_archive'),
+    path('staff/<int:pk>/delete', DeleteStaff.as_view(), name='staff_delete'),
+    path('staff/pacts/<int:pk>/<int:year>/<int:month>', staff_graphic, name='staff_graphic'),
 ]
